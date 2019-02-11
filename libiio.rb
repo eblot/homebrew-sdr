@@ -1,12 +1,18 @@
 class Libiio < Formula
   desc "Library for interfacing with IIO devices."
   homepage "https://wiki.analog.com/software/linux/docs/iio/iio"
-  url "https://github.com/analogdevicesinc/libiio/archive/v0.15.tar.gz"
-  sha256 "a729f8ff48137ad271a3e2951f322b35c1bf2ec075b488d75c8bd071c693fd19"
+  url "https://github.com/analogdevicesinc/libiio/archive/v0.17.tar.gz"
+  sha256 "f591693b8759b6f159ab7afcc1325854a883a486adaf8a849acbdfe0def9db56"
   head "https://github.com/analogdevicesinc/libiio.git"
 
   depends_on "cmake" => :build
   depends_on "ninja" => :build
+
+  patch do
+    # use find_library to locate Framework library
+    url "https://github.com/eblot/libiio/commit/3c8e9c23e149b4a4cace9fb78d50e9a7d67a6072.patch"
+    sha256 "e8e04f7e54a70472cdebdccbef7b77904e74151fed4ad26bb388918fda7ed1ed"
+  end
 
   def install
     mktemp do
