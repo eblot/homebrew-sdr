@@ -3,7 +3,8 @@
 Formulas for SDR (Software Defined Radio)
 
 ## LimeSDR
-    This setup works on my machine. YMMV...
+
+This setup works on my machine. YMMV...
 
     brew install -d -v --build-from-source --HEAD --with-python2 soapysdr
     brew install -d -v --build-from-source --HEAD --with-images limesuite
