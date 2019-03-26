@@ -7,10 +7,10 @@ class Libad9361 < Formula
 
   depends_on "cmake" => :build
   depends_on "ninja" => :build
-  depends_on "libiio"
+  depends_on "eblot/sdr/libiio"
 
   def install
-    libiio = Formulary.factory 'libiio'
+    libiio = Formulary.factory 'eblot/sdr/libiio'
 
     mktemp do
       if !(build.head?)
