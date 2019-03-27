@@ -13,12 +13,8 @@ class Gqrx < Formula
   depends_on "eblot/sdr/gr-osmosdr"
 
   def install
-    args = %W[
-      -DCMAKE_BUILD_TYPE=Release
-    ]
-
     mkdir "build" do
-      system "cmake", "-G", "Ninja", "..", *(std_cmake_args + args)
+      system "cmake", "-G", "Ninja", "..", *std_cmake_args
       system "ninja"
       system "ninja", "install"
     end
