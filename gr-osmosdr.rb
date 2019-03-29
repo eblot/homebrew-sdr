@@ -4,16 +4,20 @@ class GrOsmosdr < Formula
   url "https://cgit.osmocom.org/gr-osmosdr/snapshot/gr-osmosdr-0.1.4.tar.gz"
   mirror "https://github.com/osmocom/gr-osmosdr/archive/v0.1.4.tar.gz"
   sha256 "bcf9a9b1760e667c41a354e8cd41ef911d0929d5e4a18e0594ccb3320d735066"
-  head "https://github.com/osmocom/gr-osmosdr.git"
-  revision 6
+  head "https://github.com/eblot/gr-osmosdr.git", :branch => "python3"
 
   depends_on "cmake" => :build
   depends_on "swig" => :build
   depends_on "ninja" => :build
-  depends_on "python@2" => :build
   depends_on "boost" => :build
+  depends_on "doxygen" => :build
+  depends_on "graphviz" => :build
+  depends_on "python"
+  depends_on "gmp"
   depends_on "eblot/sdr/gnuradio"
   depends_on "librtlsdr"
+  depends_on "log4cpp"
+  depends_on "swig"
 
   patch do
     url "https://gist.githubusercontent.com/eblot/4ac69e4d72fdbab36906f7c086289b63/raw/30a33a9f2a16159053e560e0be0771175dffd28a/gr-osmosdr-clang.patch"
@@ -21,19 +25,27 @@ class GrOsmosdr < Formula
   end
 
   resource "Cheetah" do
-    url "https://files.pythonhosted.org/packages/source/C/Cheetah/Cheetah-2.4.4.tar.gz"
-    sha256 "be308229f0c1e5e5af4f27d7ee06d90bb19e6af3059794e5fd536a6f29a9b550"
+    url "https://files.pythonhosted.org/packages/d8/49/25d1d310c274433e1bc82736483f2c57f870688deddb0c56f296dcfe36f7/Cheetah3-3.2.1.tar.gz"
+    sha256 "685f961d2761e140bfea67156a013313acda66a229edc6c8708b71d9080ece9c"
   end
 
   def install
-    ENV.prepend_create_path "PYTHONPATH", libexec/"vendor/lib/python2.7/site-packages"
+    python = Formulary.factory 'python'
+    gnuradio = Formulary.factory 'gnuradio'
+    pyver = 'python3.7'
+
+    ENV.prepend_create_path "PYTHONPATH", libexec/"vendor/lib/#{pyver}/site-packages"
 
     resource("Cheetah").stage do
-      system "python", *Language::Python.setup_install_args(libexec/"vendor")
+      system "#{python.bin}/#{pyver}", *Language::Python.setup_install_args(libexec/"vendor")
     end
 
-    mktemp do
-      system "cmake", "-G", "Ninja", buildpath, *std_cmake_args
+    args = %W[
+      -DPYTHON_EXECUTABLE=#{python.bin}/python3
+    ]
+
+    mkdir "build" do
+      system "cmake", "-G", "Ninja", buildpath, *(std_cmake_args + args)
       system "ninja"
       system "ninja", "install"
     end

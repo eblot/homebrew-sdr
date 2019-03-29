@@ -1,13 +1,14 @@
 class Gnuradio < Formula
   desc "SDK providing the signal processing runtime and processing blocks"
   homepage "https://gnuradio.org/"
-  url "https://gnuradio.org/releases/gnuradio/gnuradio-3.7.13.4.tar.gz"
-  sha256 "c536c268b1e9c24f1206bbc881a5819ac46e662f4e8beaded6f3f441d3502f0d"
-  revision 5
+  url "https://github.com/gnuradio/gnuradio/archive/3.8tech-preview.tar.gz"
+  sha256 "cf50e3928e8e5f6e2910208ef7cee1c73dcf1ee93d779b592e7c2d6f663427cd"
   head "https://github.com/gnuradio/gnuradio.git"
 
   depends_on "cmake" => :build
+  depends_on "ninja" => :build
   depends_on "doxygen" => :build
+  depends_on "graphviz" => :build
   depends_on "pkg-config" => :build
   depends_on "sphinx-doc" => :build
   depends_on "swig" => :build
@@ -16,27 +17,30 @@ class Gnuradio < Formula
   depends_on "gsl"
   depends_on "numpy"
   depends_on "portaudio"
-  depends_on "python@2"
+  depends_on "python"
   depends_on "uhd"
   depends_on "zeromq"
   depends_on "wxpython"
   depends_on "freeglut"
+  depends_on "log4cpp"
+
+  patch :DATA
 
   # cheetah starts here
   resource "Markdown" do
-    url "https://files.pythonhosted.org/packages/b3/73/fc5c850f44af5889192dff783b7b0d8f3fe8d30b65c8e3f78f8f0265fecf/Markdown-2.6.11.tar.gz"
-    sha256 "a856869c7ff079ad84a3e19cd87a64998350c2b94e9e08e44270faef33400f81"
+    url "https://files.pythonhosted.org/packages/51/3f/92f9d2f4a1d5da51e7808a469ab40c6cfdf3ba1013f56abb1f46677a655c/Markdown-3.1.tar.gz"
+    sha256 "fc4a6f69a656b8d858d7503bda633f4dd63c2d70cf80abdc6eafa64c4ae8c250"
   end
 
   resource "Cheetah" do
-    url "https://files.pythonhosted.org/packages/cd/b0/c2d700252fc251e91c08639ff41a8a5203b627f4e0a2ae18a6b662ab32ea/Cheetah-2.4.4.tar.gz"
-    sha256 "be308229f0c1e5e5af4f27d7ee06d90bb19e6af3059794e5fd536a6f29a9b550"
+    url "https://files.pythonhosted.org/packages/d8/49/25d1d310c274433e1bc82736483f2c57f870688deddb0c56f296dcfe36f7/Cheetah3-3.2.1.tar.gz"
+    sha256 "685f961d2761e140bfea67156a013313acda66a229edc6c8708b71d9080ece9c"
   end
   # cheetah ends here
 
   resource "lxml" do
-    url "https://files.pythonhosted.org/packages/54/a6/43be8cf1cc23e3fa208cab04ba2f9c3b7af0233aab32af6b5089122b44cd/lxml-4.2.3.tar.gz"
-    sha256 "622f7e40faef13d232fb52003661f2764ce6cdef3edb0a59af7c1559e4cc36d1"
+    url "https://files.pythonhosted.org/packages/7d/29/174d70f303016c58bd790c6c86e6e86a9d18239fac314d55a9b7be501943/lxml-4.3.3.tar.gz"
+    sha256 "4a03dd682f8e35a10234904e0b9508d705ff98cf962c5851ed052e9340df3d90"
   end
 
   resource "MarkupSafe" do
@@ -50,8 +54,13 @@ class Gnuradio < Formula
   end
 
   resource "six" do
-    url "https://files.pythonhosted.org/packages/16/d8/bc6316cf98419719bd59c91742194c111b6f2e85abac88e496adefaf7afe/six-1.11.0.tar.gz"
-    sha256 "70e8a77beed4562e7f14fe23a786b54f6296e34344c23bc42f07b15018ff98e9"
+    url "https://files.pythonhosted.org/packages/dd/bf/4138e7bfb757de47d1f4b6994648ec67a51efe58fa907c1e11e350cddfca/six-1.12.0.tar.gz"
+    sha256 "d16a0141ec1a18405cd4ce8b4613101da75da0e9a7aec5bdd4fa804d0e0eba73"
+  end
+
+  resource "pyyaml" do
+    url "https://files.pythonhosted.org/packages/9f/2c/9417b5c774792634834e730932745bc09a7d36754ca00acf1ccd1ac2594d/PyYAML-5.1.tar.gz"
+    sha256 "436bc774ecf7c103814098159fbb84c2715d25980175292c648f2da143909f95"
   end
 
   resource "cppzmq" do
@@ -60,15 +69,18 @@ class Gnuradio < Formula
   end
 
   def install
-    ENV.prepend_path "PATH", "/System/Library/Frameworks/Python.framework/Versions/2.7/bin"
+    python = Formulary.factory 'python'
+    # python3 -c 'from sys import version_info; print("python%d.%d" % version_info[0:2])'
+    pyver = "python3.7"
+
+    ENV.prepend_create_path "PYTHONPATH", libexec/"vendor/lib/#{pyver}/site-packages"
 
     ENV["CHEETAH_INSTALL_WITHOUT_SETUPTOOLS"] = "1"
     ENV["XML_CATALOG_FILES"] = etc/"xml/catalog"
-    ENV.prepend_create_path "PYTHONPATH", libexec/"vendor/lib/python2.7/site-packages"
 
-    %w[Markdown Cheetah MarkupSafe Mako six].each do |r|
+    %w[Markdown Cheetah MarkupSafe Mako six pyyaml].each do |r|
       resource(r).stage do
-        system "python", *Language::Python.setup_install_args(libexec/"vendor")
+        system  "#{python.bin}/#{pyver}", *Language::Python.setup_install_args(libexec/"vendor")
       end
     end
 
@@ -77,7 +89,7 @@ class Gnuradio < Formula
       ENV["SDKROOT"] = MacOS.sdk_path if MacOS.version == :sierra
 
       resource("lxml").stage do
-        system "python", *Language::Python.setup_install_args(libexec/"vendor")
+        system  "#{python.bin}/#{pyver}", *Language::Python.setup_install_args(libexec/"vendor")
       end
     ensure
       ENV.delete("SDKROOT")
@@ -89,21 +101,26 @@ class Gnuradio < Formula
       -DGR_PKG_CONF_DIR=#{etc}/gnuradio/conf.d
       -DGR_PREFSDIR=#{etc}/gnuradio/conf.d
       -DENABLE_DEFAULT=OFF
+      -DPYTHON_EXECUTABLE=#{python.bin}/#{pyver}
     ]
 
     enabled = %w[GR_ANALOG GR_FFT VOLK GR_FILTER GNURADIO_RUNTIME
-                 GR_BLOCKS GR_PAGER GR_NOAA GR_CHANNELS GR_AUDIO
-                 GR_FCD GR_VOCODER GR_FEC GR_DIGITAL GR_DTV GR_ATSC
+                 GR_BLOCKS GR_CHANNELS GR_AUDIO
+                 GR_VOCODER GR_FEC GR_DIGITAL GR_DTV
                  GR_TRELLIS GR_ZEROMQ GR_WAVELET GR_UHD DOXYGEN SPHINX
-                 PYTHON GR_UTILS GR_WXGUI GRC]
+                 PYTHON GR_UTILS GRC]
     enabled.each do |c|
       args << "-DENABLE_#{c}=ON"
     end
 
+    inreplace "docs/doxygen/Doxyfile.swig_doc.in" do |s|
+      s.gsub! /USE_PDFLATEX\s+=\s+YES/, "USE_PDFLATEX = NO"
+    end
+
     mkdir "build" do
-      system "cmake", "..", *args
-      system "make"
-      system "make", "install"
+      system "cmake", "-G", "Ninja", "..", *args
+      system "ninja"
+      system "ninja", "install"
     end
 
     rm bin.children.reject(&:executable?)
@@ -172,7 +189,7 @@ class Gnuradio < Formula
 
       main()
     EOS
-    system "python2.7", testpath/"test.py"
+    system #{python.bin}/#{pyver}, testpath/"test.py"
 
     cd testpath do
       system "#{bin}/gr_modtool", "newmod", "test"
@@ -185,3 +202,29 @@ class Gnuradio < Formula
     end
   end
 end
+
+__END__
+diff --git a/gnuradio-runtime/lib/pmt/CMakeLists.txt b/gnuradio-runtime/lib/pmt/CMakeLists.txt
+index c46227e76..a073dee05 100644
+--- a/gnuradio-runtime/lib/pmt/CMakeLists.txt
++++ b/gnuradio-runtime/lib/pmt/CMakeLists.txt
+@@ -28,6 +28,7 @@ add_library(gnuradio-pmt
+ target_link_libraries(gnuradio-pmt
+   Boost::boost
+   Log4Cpp::log4cpp
++  boost_thread-mt
+ )
+ 
+ target_include_directories(gnuradio-pmt
+diff --git a/gr-audio/lib/CMakeLists.txt b/gr-audio/lib/CMakeLists.txt
+index 91333b24d..e6a978090 100644
+--- a/gr-audio/lib/CMakeLists.txt
++++ b/gr-audio/lib/CMakeLists.txt
+@@ -28,6 +28,7 @@ target_include_directories(gnuradio-audio
+   PUBLIC
+   $<INSTALL_INTERFACE:include>
+   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
++  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+   )
+ 
+ list(APPEND gr_audio_confs ${CMAKE_CURRENT_SOURCE_DIR}/gr-audio.conf)

@@ -8,7 +8,7 @@ class Volk < Formula
   sha256 "32131ba17846850c07270bc5897dd2de7130ec02ca029875a36966335120e7bf"
   depends_on "cmake" => :build
   depends_on "ninja" => :build
-  depends_on "python@2" => :build
+  depends_on "python" => :build
 
   resource "Mako" do
     url "https://files.pythonhosted.org/packages/eb/69/6137c60cae2ab8c911bff510bb6d1d23a0189f75d114bb277606c6486b5f/Mako-1.0.8.tar.gz"
@@ -21,18 +21,24 @@ class Volk < Formula
   end
 
   def install
-    ENV.prepend_create_path "PYTHONPATH", libexec/"vendor/lib/python2.7/site-packages"
+    ENV.prepend_create_path "PYTHONPATH", libexec/"vendor/lib/python3.7/site-packages"
+    pyver = "python3.7"
+
+    python = Formulary.factory 'python'
 
     resource("MarkupSafe").stage do
-      system "python", *Language::Python.setup_install_args(libexec/"vendor")
+      system "#{python.bin}/#{pyver}", *Language::Python.setup_install_args(libexec/"vendor")
     end
 
     resource("Mako").stage do
-      system "python", *Language::Python.setup_install_args(libexec/"vendor")
+      system "#{python.bin}/#{pyver}", *Language::Python.setup_install_args(libexec/"vendor")
     end
 
     mktemp do
-      system "cmake", "-G", "Ninja", buildpath, *std_cmake_args
+      args = %W[
+        -DPYTHON_EXECUTABLE=#{python.bin}/python3
+      ]
+      system "cmake", "-G", "Ninja", buildpath, *(std_cmake_args + args)
       system "ninja"
       system "ninja", "install"
     end
