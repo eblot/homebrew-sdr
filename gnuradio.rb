@@ -1,9 +1,9 @@
 class Gnuradio < Formula
   desc "SDK providing the signal processing runtime and processing blocks"
   homepage "https://gnuradio.org/"
-  url "https://github.com/gnuradio/gnuradio/archive/3.8tech-preview.tar.gz"
-  sha256 "cf50e3928e8e5f6e2910208ef7cee1c73dcf1ee93d779b592e7c2d6f663427cd"
-  head "https://github.com/gnuradio/gnuradio.git"
+  url "https://github.com/gnuradio/gnuradio/archive/v3.8.0.0-rc2.tar.xz"
+  sha256 "1c3219a40bc44f22215457585ed57332a2aa63a46342e1231f204fda37d4354a"
+  head "https://github.com/gnuradio/gnuradio.git", :tag => "v3.8.0.0-rc2"
 
   depends_on "cmake" => :build
   depends_on "ninja" => :build
@@ -63,6 +63,16 @@ class Gnuradio < Formula
     sha256 "436bc774ecf7c103814098159fbb84c2715d25980175292c648f2da143909f95"
   end
 
+  resource "click" do
+    url "https://files.pythonhosted.org/packages/f8/5c/f60e9d8a1e77005f664b76ff8aeaee5bc05d0a91798afd7f53fc998dbc47/Click-7.0.tar.gz"
+    sha256 "5b94b49521f6456670fdb30cd82a4eca9412788a93fa6dd6df72c94d5a8ff2d7"
+  end
+
+  resource "click-plugins" do
+    url "https://files.pythonhosted.org/packages/5f/1d/45434f64ed749540af821fd7e42b8e4d23ac04b1eda7c26613288d6cd8a8/click-plugins-1.1.1.tar.gz"
+    sha256 "46ab999744a9d831159c3411bb0c79346d94a444df9a3a3742e9ed63645f264b"
+  end
+
   resource "cppzmq" do
     url "https://raw.githubusercontent.com/zeromq/cppzmq/46fc0572c5e9f09a32a23d6f22fd79b841f77e00/zmq.hpp"
     sha256 "964031c0944f913933f55ad1610938105a6657a69d1ac5a6dd50e16a679104d5"
@@ -78,7 +88,7 @@ class Gnuradio < Formula
     ENV["CHEETAH_INSTALL_WITHOUT_SETUPTOOLS"] = "1"
     ENV["XML_CATALOG_FILES"] = etc/"xml/catalog"
 
-    %w[Markdown Cheetah MarkupSafe Mako six pyyaml].each do |r|
+    %w[Markdown Cheetah MarkupSafe Mako six pyyaml click click-plugins].each do |r|
       resource(r).stage do
         system  "#{python.bin}/#{pyver}", *Language::Python.setup_install_args(libexec/"vendor")
       end
