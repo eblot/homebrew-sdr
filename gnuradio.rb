@@ -26,6 +26,7 @@ class Gnuradio < Formula
   depends_on "qwt"
   depends_on "freeglut"
   depends_on "log4cpp"
+  depends_on "gnome-icon-theme"
 
   patch :DATA
 
