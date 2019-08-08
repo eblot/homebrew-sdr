@@ -1,7 +1,7 @@
 class Gnuradio < Formula
   desc "SDK providing the signal processing runtime and processing blocks"
   homepage "https://gnuradio.org/"
-  url "https://github.com/gnuradio/gnuradio/archive/v3.8.0.0-rc2.tar.xz"
+  url "https://github.com/gnuradio/gnuradio/releases/download/v3.8.0.0-rc2/gnuradio-3.8.0.0-rc2.tar.xz"
   sha256 "1c3219a40bc44f22215457585ed57332a2aa63a46342e1231f204fda37d4354a"
   head "https://github.com/gnuradio/gnuradio.git", :tag => "v3.8.0.0-rc2"
 
@@ -17,10 +17,13 @@ class Gnuradio < Formula
   depends_on "gsl"
   depends_on "numpy"
   depends_on "portaudio"
+  depends_on "libyaml"
+  depends_on "mpir"
   depends_on "python"
   depends_on "uhd"
   depends_on "zeromq"
-  depends_on "wxpython"
+  depends_on "pyqt"
+  depends_on "qwt"
   depends_on "freeglut"
   depends_on "log4cpp"
 
@@ -32,7 +35,7 @@ class Gnuradio < Formula
     sha256 "fc4a6f69a656b8d858d7503bda633f4dd63c2d70cf80abdc6eafa64c4ae8c250"
   end
 
-  resource "Cheetah" do
+  resource "Cheetah3" do
     url "https://files.pythonhosted.org/packages/d8/49/25d1d310c274433e1bc82736483f2c57f870688deddb0c56f296dcfe36f7/Cheetah3-3.2.1.tar.gz"
     sha256 "685f961d2761e140bfea67156a013313acda66a229edc6c8708b71d9080ece9c"
   end
@@ -88,7 +91,7 @@ class Gnuradio < Formula
     ENV["CHEETAH_INSTALL_WITHOUT_SETUPTOOLS"] = "1"
     ENV["XML_CATALOG_FILES"] = etc/"xml/catalog"
 
-    %w[Markdown Cheetah MarkupSafe Mako six pyyaml click click-plugins].each do |r|
+    %w[Markdown Cheetah3 MarkupSafe Mako six pyyaml click click-plugins].each do |r|
       resource(r).stage do
         system  "#{python.bin}/#{pyver}", *Language::Python.setup_install_args(libexec/"vendor")
       end
@@ -107,15 +110,21 @@ class Gnuradio < Formula
 
     resource("cppzmq").stage include.to_s
 
+    qwt = Formulary.factory 'qwt'
+
     args = std_cmake_args + %W[
       -DGR_PKG_CONF_DIR=#{etc}/gnuradio/conf.d
       -DGR_PREFSDIR=#{etc}/gnuradio/conf.d
-      -DENABLE_DEFAULT=OFF
       -DPYTHON_EXECUTABLE=#{python.bin}/#{pyver}
+      -DPC_QWT_LIBRARIES=qwt
+      -DPC_QWT_LIBDIR=#{qwt.lib}/qwt.framework
+      -DPC_QWT_INCLUDEDIR=#{qwt.lib}/qwt.framework/Headers
     ]
 
+    # -DENABLE_DEFAULT=OFF
+
     enabled = %w[GR_ANALOG GR_FFT VOLK GR_FILTER GNURADIO_RUNTIME
-                 GR_BLOCKS GR_CHANNELS GR_AUDIO
+                 GR_BLOCKS GR_CHANNELS GR_AUDIO GR_QTGUI
                  GR_VOCODER GR_FEC GR_DIGITAL GR_DTV
                  GR_TRELLIS GR_ZEROMQ GR_WAVELET GR_UHD DOXYGEN SPHINX
                  PYTHON GR_UTILS GRC]
@@ -132,6 +141,9 @@ class Gnuradio < Formula
       system "ninja"
       system "ninja", "install"
     end
+
+    ENV.prepend_create_path "PYTHONPATH", lib/"#{pyver}/site-packages"
+    ENV.prepend_create_path "PYTHONPATH", lib/"#{pyver}/dist-packages"
 
     rm bin.children.reject(&:executable?)
     bin.env_script_all_files(libexec/"bin", :PYTHONPATH => ENV["PYTHONPATH"])
