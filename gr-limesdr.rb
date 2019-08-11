@@ -9,8 +9,8 @@ class GrLimesdr < Formula
   depends_on "ninja" => :build
   depends_on "python"
   depends_on "gmp"
-  depends_on "limesuite"
   depends_on "swig"
+  depends_on "pothosware/pothos/limesuite"
   depends_on "eblot/sdr/gnuradio"
 
   def install

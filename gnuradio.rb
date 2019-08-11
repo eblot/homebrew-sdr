@@ -20,6 +20,7 @@ class Gnuradio < Formula
   depends_on "libyaml"
   depends_on "mpir"
   depends_on "python"
+  depends_on "pygobject3"
   depends_on "uhd"
   depends_on "zeromq"
   depends_on "pyqt"
