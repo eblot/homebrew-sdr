@@ -1,9 +1,9 @@
 class Gnuradio < Formula
   desc "SDK providing the signal processing runtime and processing blocks"
   homepage "https://gnuradio.org/"
-  url "https://github.com/gnuradio/gnuradio/releases/download/v3.8.0.0-rc2/gnuradio-3.8.0.0-rc2.tar.xz"
-  sha256 "1c3219a40bc44f22215457585ed57332a2aa63a46342e1231f204fda37d4354a"
-  head "https://github.com/gnuradio/gnuradio.git", :tag => "v3.8.0.0-rc2"
+  url "https://github.com/gnuradio/gnuradio/releases/download/v3.8.0.0/gnuradio-3.8.0.0.tar.xz"
+  sha256 "1980b4b5c29679b1c8d0804032e412c9a9cae8dd27362cbe032b9152dc2b852b"
+  head "https://github.com/gnuradio/gnuradio.git", :branch => "maint-3.8"
 
   depends_on "cmake" => :build
   depends_on "ninja" => :build
