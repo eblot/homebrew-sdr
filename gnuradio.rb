@@ -29,6 +29,24 @@ class Gnuradio < Formula
   depends_on "log4cpp"
   depends_on "gnome-icon-theme"
 
+  patch do
+    # log4cpp invalid module name
+    url "https://github.com/eblot/gnuradio/commit/45f1e21c952a194103b2460be72a6ceec160ceb3.patch"
+    sha256 "9ca4f76c92ae29de0d9b75a13e328798f61525ac28f7a7c29f9c86fcd9a308b6"
+  end
+
+  patch do
+    # block drag 'n drop does not work on GRC (Quartz backend)
+    url "https://github.com/eblot/gnuradio/commit/5ee92ee7e2a9936615a494aa814fa31eda0398e7.patch"
+    sha256 "5fe771f7304ff9463d5a7ef4468ab72924bba298a75326bd8807c3ee80301f15"
+  end
+
+  patch do
+    # block drop (mouse button release) crashes (Quartz backend)
+    url "https://github.com/eblot/gnuradio/commit/61be64deb0cdfc6b356d4391151b1134ddee7437.patch"
+    sha256 "7d91fa9ebbb59a64d0d42b4ce47f8ebc3198c8c0796c859cef18a9ae1ea66c26"
+  end
+
   patch :DATA
 
   # cheetah starts here
