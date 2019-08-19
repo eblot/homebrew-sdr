@@ -36,6 +36,7 @@ class GrOsmosdr < Formula
     pyver = 'python3.7'
 
     ENV.prepend_create_path "PYTHONPATH", libexec/"vendor/lib/#{pyver}/site-packages"
+    ENV.append "CXXFLAGS", "-std=c++11"
 
     resource("Cheetah3").stage do
       system "#{python.bin}/#{pyver}", *Language::Python.setup_install_args(libexec/"vendor")
