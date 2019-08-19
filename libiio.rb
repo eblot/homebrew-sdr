@@ -14,6 +14,12 @@ class Libiio < Formula
     sha256 "e8e04f7e54a70472cdebdccbef7b77904e74151fed4ad26bb388918fda7ed1ed"
   end
 
+  patch do
+    # python3-only
+    url "https://github.com/eblot/libiio/commit/1046a583c6bb45dab7574a8ddd2cdc1e5c07568b.patch"
+    sha256 "1dd0d36f3680d1b7d999caf8988e96f39740d398d26e3b86238bfc8b3109866c"
+  end
+
   def install
     mktemp do
       inreplace buildpath/"CMakeLists.txt",
@@ -26,7 +32,7 @@ class Libiio < Formula
       system "cmake", "-G", "Ninja", buildpath, "-DOSX_PACKAGE=OFF",
              *std_cmake_args
       system "ninja"
-      system "cmake", "--build", ".", "--target", "install"
+      system "ninja", "install"
     end
   end
 
