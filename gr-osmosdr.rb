@@ -14,6 +14,7 @@ class GrOsmosdr < Formula
   depends_on "graphviz" => :build
   depends_on "python"
   depends_on "gmp"
+  depends_on "mpir"
   depends_on "eblot/sdr/gnuradio"
   depends_on "librtlsdr"
   depends_on "log4cpp"
@@ -24,7 +25,7 @@ class GrOsmosdr < Formula
     sha256 "7e94dd33a3b747cdc1b25942c9061f8d5415612c4f8f28f923ef52c8cf84e4a7"
   end
 
-  resource "Cheetah" do
+  resource "Cheetah3" do
     url "https://files.pythonhosted.org/packages/d8/49/25d1d310c274433e1bc82736483f2c57f870688deddb0c56f296dcfe36f7/Cheetah3-3.2.1.tar.gz"
     sha256 "685f961d2761e140bfea67156a013313acda66a229edc6c8708b71d9080ece9c"
   end
@@ -36,7 +37,7 @@ class GrOsmosdr < Formula
 
     ENV.prepend_create_path "PYTHONPATH", libexec/"vendor/lib/#{pyver}/site-packages"
 
-    resource("Cheetah").stage do
+    resource("Cheetah3").stage do
       system "#{python.bin}/#{pyver}", *Language::Python.setup_install_args(libexec/"vendor")
     end
 
