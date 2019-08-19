@@ -1,10 +1,8 @@
 class Gqrx < Formula
   desc "Open source software defined radio"
   homepage "http://gqrx.dk"
-  url "https://github.com/csete/gqrx/archive/v2.11.5.tar.gz"
-  sha256 "5a15d8eb863f68a8590d27ebb2f50e735e814b1651de86952a7e425a68476d9d"
-  # head "https://github.com/csete/gqrx.git"
-  head "file:///Users/eblot/Sources/Git/sdr/gqrx", :using => :git, :branch => "gr3.8"
+  # pristine tarballs are too old
+  head "file:///Users/eblot/Sources/Git/github.com/gqrx", :using => :git, :branch => "gr3.8-py3-plutosdr"
 
   depends_on "cmake" => :build
   depends_on "ninja" => :build
@@ -13,6 +11,12 @@ class Gqrx < Formula
   depends_on "portaudio"
   depends_on "eblot/sdr/gnuradio"
   depends_on "eblot/sdr/gr-osmosdr"
+
+  # TODO:
+  # Fix libraries to link, as for now, the final link fails
+  # Add /usr/local/opt/gnuradio/lib/libgnuradio-{runtime,analog,audio,blocks,digital,filter,fft,pmt}.dylib
+  #     /usr/local/opt/log4cpp/lib/liblog4cpp.dylib to build gqrx app
+  # Waiting for GR feedback on how to retrieve the proper libs from CMake macro
 
   def install
     python = Formulary.factory 'python'

@@ -1,8 +1,6 @@
 class GrIio < Formula
   desc "Osmocom GNU Radio Blocks"
   homepage "https://github.com/analogdevicesinc/gr-iio"
-  #url "https://github.com/analogdevicesinc/gr-iio/archive/v0.3.tar.gz"
-  # sha256 "bcf9a9b1760e667c41a354e8cd41ef911d0929d5e4a18e0594ccb3320d735066"
   head "https://github.com/eblot/gr-iio.git", :branch => "gr3.8-py3"
 
   depends_on "cmake" => :build
@@ -27,9 +25,12 @@ class GrIio < Formula
     sha256 "685f961d2761e140bfea67156a013313acda66a229edc6c8708b71d9080ece9c"
   end
 
+  # TODO:
+  #   * fix installation path (iio/iio is likely wrong)
+  #   * library version (version number do not exist, so lib is *uio....dylib)
+
   def install
     python = Formulary.factory 'python'
-    gnuradio = Formulary.factory 'eblot/sdr/gnuradio'
     libad9361 = Formulary.factory 'eblot/sdr/libad9361'
     pyver = 'python3.7'
 

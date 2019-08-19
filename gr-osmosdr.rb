@@ -1,10 +1,8 @@
 class GrOsmosdr < Formula
   desc "Osmocom GNU Radio Blocks"
   homepage "https://osmocom.org/projects/sdr/wiki/GrOsmoSDR"
-  url "https://cgit.osmocom.org/gr-osmosdr/snapshot/gr-osmosdr-0.1.4.tar.gz"
-  mirror "https://github.com/osmocom/gr-osmosdr/archive/v0.1.4.tar.gz"
-  sha256 "bcf9a9b1760e667c41a354e8cd41ef911d0929d5e4a18e0594ccb3320d735066"
-  head "https://github.com/eblot/gr-osmosdr.git", :branch => "python3"
+  # pristine tarballs are too old
+  head "https://github.com/eblot/gr-osmosdr.git", :branch => "python3-gqrx"
 
   depends_on "cmake" => :build
   depends_on "swig" => :build
@@ -16,6 +14,7 @@ class GrOsmosdr < Formula
   depends_on "gmp"
   depends_on "mpir"
   depends_on "eblot/sdr/gnuradio"
+  depends_on "eblot/sdr/gr-iio"
   depends_on "librtlsdr"
   depends_on "log4cpp"
   depends_on "swig"
@@ -32,7 +31,7 @@ class GrOsmosdr < Formula
 
   def install
     python = Formulary.factory 'python'
-    gnuradio = Formulary.factory 'gnuradio'
+    gnuradio = Formulary.factory 'eblot/sdr/gnuradio'
     pyver = 'python3.7'
 
     ENV.prepend_create_path "PYTHONPATH", libexec/"vendor/lib/#{pyver}/site-packages"
