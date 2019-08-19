@@ -26,7 +26,7 @@ class Libad9361 < Formula
              "-DCMAKE_FRAMEWORK_PATH=#{libiio.opt_prefix}",
              *std_cmake_args
       system "ninja"
-      system "cmake", "--build", ".", "--target", "install"
+      system "ninja", "install"
     end
   end
 
