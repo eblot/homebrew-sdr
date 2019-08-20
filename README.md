@@ -15,19 +15,19 @@ versions or unsupported hardware.
 For now, these formulas are dedicated to support the following SDR devices.
 
 * RTL-SDR USB dongle
-  * Those cheap dongles are by far the best supported devices
+  * Those ~ €15 cheap dongles are by far the best supported devices.
 
 * Analog Device PlutoSDR
   * Those ~ €100 devices have TX capability and a larger frequency bandwidth
     than RTL-SDR, but are quite less supported, although the Analog Devices
-    keeps releasing update and are quite active
+    keeps releasing update and are quite active.
 
 * LimeSDR
   * These ~ €400 devices have strong TX and RX capability and a very large
     frequency bandwidth. However their support is simply ugly, with buggy
     software, rely on legacy applications and APIs and very few applications
     are able to support them properly, *i.e.* nice hardware, but notably
-    difficult, if not impossible, to use on macOS
+    difficult, if not impossible, to use on macOS.
 
 ## Software
 
@@ -38,11 +38,6 @@ For now, these formulas are dedicated to support the following SDR devices.
  * GR-iio / libiio
 
 ## Status
-
-### Warning
-
-I do not want to support the 10 year old deprecated Python 2.7 interpreter,
-so all formulas are built against Python 3.7
 
 GNUradio 3.8 final has been released this month (August '19) and has still
 very rough corners to run on macOS with a Quartz backend, especially the
@@ -57,16 +52,20 @@ now GR 3.8 on macOS should be considered as very experimental.
 * LimeSDR is not yet supported (will it be?)
 * GRC works without crashing, but several UI glitches remain.
 
+### Warning
+
+I do not want to support the 10 year old deprecated Python 2.7 interpreter,
+so all formulas are built against Python 3.7.
+
 ## Build
 
 Most applications and libraries require patch to successfully build and run,
-so many sources come from forked Github repositories. You need to select the
-*HEAD* option to build with brew
+so many sources come from forked Github repositories.
 
     brew tap eblot/sdr
     brew install [-d] [-v] -s eblot/sdr/gnuradio
     brew install [-d] [-v] -s eblot/sdr/libiio
     brew install [-d] [-v] -s eblot/sdr/libad9361
-    brew install [-d] [-v] -s eblot/sdr/gr-iio
-    brew install [-d] [-v] -s eblot/sdr/gr-osmosdr
-    brew install [-d] [-v] -s eblot/sdr/gqrx
+    brew install [-d] [-v] --HEAD eblot/sdr/gr-iio
+    brew install [-d] [-v] --HEAD eblot/sdr/gr-osmosdr
+    brew install [-d] [-v] --HEAD eblot/sdr/gqrx
