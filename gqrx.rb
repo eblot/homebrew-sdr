@@ -2,7 +2,7 @@ class Gqrx < Formula
   desc "Open source software defined radio"
   homepage "http://gqrx.dk"
   # pristine tarballs are too old
-  head "file:///Users/eblot/Sources/Git/github.com/gqrx", :using => :git, :branch => "gr3.8-py3-plutosdr"
+  head "https://github.com/eblot/gqrx", :using => :git, :branch => "gr3.8-py3-plutosdr"
 
   depends_on "cmake" => :build
   depends_on "ninja" => :build
